@@ -26,4 +26,16 @@ These are the following steps to complete the challenge:
 
 * Created a repository (1d-computing-basics), then made a README.md in current repository. 
 
+## Usage
 
+To generate an index.html file, run the following command:
+
+```sh
+./index-generator
+```
+The output of this script is a html file which should be served by web service (darkhttpd):
+
+```sh
+darkhttpd . --port 12345
+```
+to see result, open a browser and type `localhost:12345` , then press enter.
