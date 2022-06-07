@@ -26,32 +26,18 @@ cat << EOF > index.html
 EOF
 
 # add the second section of html (dynamic section)
-counter=1
-for image in images/*
+IFS=$'\n'
+while read -r image1
 do
-    if [ -f "$image" ]
-    then
-        if [ $counter -eq 1 ] 
-        then
-            echo "      <tr>" >> index.html
-            echo "        <td><img src=\"$image\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
-        elif [ $counter -eq 2 ]
-        then 
-            echo "        <td><img src=\"$image\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
-        elif [ $counter -eq 3 ]
-        then
-      	    echo "        <td><img src=\"$image\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
-            echo "      </tr>" >> index.html 
-        fi
+    read image2
+    read image3
 
-        counter=$[counter+1]
-
-        if [ $counter -gt 3 ]
-        then 
-            counter=1
-        fi
-    fi
-done
+    echo "      <tr>" >> index.html
+    echo "        <td><img src=\"$image1\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
+    echo "        <td><img src=\"$image2\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
+    echo "        <td><img src=\"$image3\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
+    echo "      </tr>" >> index.html 
+done <<< "$(ls images/*)"
 
 # add the last section of html (static section)
 cat << EOF >> index.html
