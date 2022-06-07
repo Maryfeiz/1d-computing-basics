@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 
+# check existing of images dir
+if ! [ -d images ]
+then 
+    echo "images directory does not exist"
+    exit 1
+fi
+
 # add the first section of html (static section)
 cat << EOF > index.html
-
 <!doctype html>
 <html>
   <head>
@@ -13,16 +19,43 @@ cat << EOF > index.html
     <h1>MATH COLLECTION</h1>
    </center>
 
-  <table border="5" bordercolor="red" align="center">
+    <table border="5" bordercolor="red" align="center">
+      <tr>
+        <th colspan="3">PICTURES</th> 
+      </tr>
 EOF
 
 # add the second section of html (dynamic section)
+counter=1
+for image in images/*
+do
+    if [ -f "$image" ]
+    then
+        if [ $counter -eq 1 ] 
+        then
+            echo "      <tr>" >> index.html
+            echo "        <td><img src=\"$image\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
+        elif [ $counter -eq 2 ]
+        then 
+            echo "        <td><img src=\"$image\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
+        elif [ $counter -eq 3 ]
+        then
+      	    echo "        <td><img src=\"$image\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
+            echo "      </tr>" >> index.html 
+        fi
 
+        counter=$[counter+1]
+
+        if [ $counter -gt 3 ]
+        then 
+            counter=1
+        fi
+    fi
+done
 
 # add the last section of html (static section)
-
 cat << EOF >> index.html
-  </table>
+    </table>
   </body>
 </html>
 EOF
