@@ -8,14 +8,15 @@ then
 fi
 
 # check file names and rename them if necessary
-for image_name in image/*
+for image_name in images/*
 do
     if echo "$image_name" | file --brief --mime-encoding - | grep --quiet 'utf-8' 
     then 
-        new_name="$(iconv -t encoding ASCII//TRANSLIT <<< "$image_name")"
-        mv "$image_name" "$new_image"
+        new_name="$(iconv -t ASCII//TRANSLIT <<< "$image_name")"
+        mv "$image_name" "$new_name"
     fi
 done
+
 # add the first section of html (static section)
 cat << EOF > index.html
 <!doctype html>
