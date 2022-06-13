@@ -33,12 +33,14 @@ To generate an index.html file, run the following command:
 ```sh
 ./index-generator
 ```
+
 The output of this script is a html file which should be served by a web service (darkhttpd):
 
 ```sh
 darkhttpd . --port 12345
 ```
-to see result, open a browser and type `localhost:12345` , then press enter.
+
+To see the result, open a browser and type `localhost:12345` , then press enter.
 
 ## Challenge Response
 
@@ -47,6 +49,11 @@ to see result, open a browser and type `localhost:12345` , then press enter.
 ---
 2. How can you look up the process ID of your server? Document the command line used and the output.
 > There are two ways to get the process ID of my server:
-* `ps -A | grep darkttpd | grep -v grep | cut -d ' '  -f 1`
-* `pgrep darkhttpd`
+```sh
+$ ps -A | grep darkttpd | grep -v grep | cut -d ' '  -f 1
+41799
+
+$ pgrep darkhttpd
+41799
+```
 
