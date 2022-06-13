@@ -7,6 +7,15 @@ then
     exit 1
 fi
 
+# check file names and rename them if necessary
+for image_name in image/*
+do
+    if echo "$image_name" | file --brief --mime-encoding - | grep --quiet 'utf-8' 
+    then 
+        new_name="$(iconv -t encoding ASCII//TRANSLIT <<< "$image_name")"
+        mv "$image_name" "$new_image"
+    fi
+done
 # add the first section of html (static section)
 cat << EOF > index.html
 <!doctype html>
@@ -27,17 +36,17 @@ EOF
 
 # add the second section of html (dynamic section)
 IFS=$'\n'
-while read -r image1
+while read image1
 do
     read image2
     read image3
-
+    
     echo "      <tr>" >> index.html
     echo "        <td><img src=\"$image1\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
     echo "        <td><img src=\"$image2\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
     echo "        <td><img src=\"$image3\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
     echo "      </tr>" >> index.html 
-done <<< "$(ls images/*)"
+done <<< "$(ls -1 images/*)"
 
 # add the last section of html (static section)
 cat << EOF >> index.html
