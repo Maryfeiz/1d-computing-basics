@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+# First we make sure that the directory exists or terminate execution otherwise
+# to prevent any undefined behavior in script.
+if ! [ -d images ]
+then 
+    echo "images directory does not exist"
+    exit 1
+fi
+
+# File names can have character set other than ASCII which are allowed by operating systems,
+# but are not supported by all web services. Therefore, we need to check file names and 
+# encode them in a compatible character set if necessary and make sure that all images 
+# can be displayed correctly.
+for image_name in images/*
+do
+    if echo "$image_name" | file --brief --mime-encoding - | grep --quiet 'utf-8' 
+    then 
+        new_name="$(iconv -t ASCII//TRANSLIT <<< "$image_name")"
+        mv "$image_name" "$new_name"
+    fi
+done
+
+# The output file is a HTML with two static and one dynamic (table) section.
+# HERE-docs is applicable for writing the two static sections of HTML. 
+cat << EOF > index.html
+<!doctype html>
+<html>
+  <head>
+    <title>Images</title>
+  </head>
+  <body>
+   <center>
+    <h1>MATH COLLECTION</h1>
+   </center>
+
+    <table border="5" bordercolor="red" align="center">
+      <tr>
+        <th colspan="3">PICTURES</th> 
+      </tr>
+EOF
+
+# Here we have the dynamic section of HTML holding a table with three columns, 
+# each cell should display an image. 
+# To perform the above task, a list of images as an input is given to the while-loop 
+# and reading three images simultaneously in each iteration to fill up each row.
+IFS=$'\n'
+while read image1
+do
+    read image2
+    read image3
+    
+    echo "      <tr>" >> index.html
+    echo "        <td><img src=\"$image1\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
+    echo "        <td><img src=\"$image2\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
+    echo "        <td><img src=\"$image3\" alt=\"\" border=3 height=100 width=300></td>" >> index.html
+    echo "      </tr>" >> index.html 
+done <<< "$(ls -1 images/*)"
+
+# And continued by the last static section of HTML.
+cat << EOF >> index.html
+    </table>
+  </body>
+</html>
+EOF
